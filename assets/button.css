@@ -1,0 +1,60 @@
+.content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-flow: column;
+}
+
+.button {
+    display: flex;
+    padding: 10px 45px;
+    margin-bottom: 70px;
+    text-decoration: none;
+    font-family: 'Poppins', sans-serif;
+    font-size: 40px;
+    color: #c4c3ca;
+    background-color: #5F4BB6;
+    transition: 1s;
+    box-shadow: 6px 6px 0 black;
+    transform: skewX(-15deg);
+    cursor: pointer;
+    width: fit-content;
+    text-align: center;
+}
+
+.button:focus {
+    outline: none;
+}
+
+.button:hover {
+    transition: 0.5s;
+    box-shadow: 10px 10px 0 #86A5D9;
+}
+
+.button span {
+    transform: skewX(15deg)
+}
+
+.default_cursor {
+    cursor: default;
+}
+
+#gameback {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.svg_back {
+    fill: #c4c3ca;
+    height: 40px;
+    width: 40px;
+    margin: 10px;
+}
+
+.classic_text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2vw;
+    color: #c4c3ca;
+    margin: 2vw 0 1vw 0;
+}

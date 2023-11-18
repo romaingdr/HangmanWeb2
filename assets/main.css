@@ -29,19 +29,65 @@ body{
     transform: translateY(4px);
 }
 
-
-:root {
-    --letter-size: 40px;
-    --letter-padding: 20px;
-    --tooltip-size: 15px;
-}
+/* Div des lettres
+ */
 
 .letters {
     position: relative;
     margin-left: 30vw;
     max-height: 0;
-    width: 100%;
+    width: 80%;
     margin-bottom: 150px;
+}
+
+/* Div de l'input du mot
+ */
+
+.word_input{
+    margin-left: 33vw;
+    margin-bottom: 100px;
+}
+
+.word_text {
+    padding-left: 20px;
+    height: 48px;
+    width: 18vw;
+    font-weight: 500;
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 22px;
+    letter-spacing: 0.5px;
+    outline: none;
+    color: #c4c3ca;
+    background-color: #28282f;
+    border: none;
+    transition: all 200ms linear;
+    box-shadow: 0 4px 8px 0 rgba(21, 21, 21, .2);
+    font-family: "Poppins", sans-serif;
+}
+
+/* Div de l'affichage du pendu
+ */
+
+.affichage {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+.affichage > img{
+    margin-left: 200px;
+    width: 20%;
+}
+
+
+
+
+
+/* PAS TOUCHE*/
+
+:root {
+    --letter-size: 40px;
+    --letter-padding: 20px;
+    --tooltip-size: 15px;
 }
 
 .wrapper {
@@ -178,43 +224,4 @@ body{
 .border_letter {
     border: solid 4px #4c5265;
     transition: all 0.5s;
-}
-
-.word_input{
-    margin-top: 20%;
-    margin-left: 30%;
-    margin-bottom: 10%;
-}
-.word_text {
-    padding-left: 20px;
-    height: 48px;
-    width: 18vw;
-    font-weight: 500;
-    border-radius: 4px;
-    font-size: 14px;
-    line-height: 22px;
-    letter-spacing: 0.5px;
-    outline: none;
-    color: #c4c3ca;
-    background-color: #28282f;
-    border: none;
-    transition: all 200ms linear;
-    box-shadow: 0 4px 8px 0 rgba(21, 21, 21, .2);
-    font-family: "Poppins", sans-serif;
-}
-
-.images {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 1vw;
-}
-
-img {
-    width: 20%;
-}
-
-.data {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }

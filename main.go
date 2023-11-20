@@ -104,6 +104,7 @@ func resultHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func guessHandler(w http.ResponseWriter, r *http.Request) {
+	difficulty := r.URL.Query().Get("difficulty")
 	letter := strings.ToUpper(r.FormValue("letter"))
 	if letter == "" {
 		http.Error(w, "Pas de lettre reçue", http.StatusBadRequest)
@@ -122,7 +123,7 @@ func guessHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "/hangman", http.StatusSeeOther)
+	http.Redirect(w, r, "/hangman?difficulty="+difficulty, http.StatusSeeOther)
 }
 
 func pickRandomWord(words []string) string {

@@ -33,7 +33,7 @@
     </div>
 </div>
 
-<form method="POST" action="/guess">
+<form method="POST" id="guessForm" action="">
     <div id="keyboard">
         <div class="row">
             <button class="icon-letter" type="submit" name="letter" value="A">A</button>
@@ -70,6 +70,13 @@
 
     </div>
 </form>
+
+<script>
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const difficulty = urlParams.get('difficulty');
+    document.getElementById('guessForm').setAttribute('action', '/guess?difficulty=' + difficulty);
+</script>
 
 </body>
 </html>

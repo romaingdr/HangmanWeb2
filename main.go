@@ -9,15 +9,15 @@ import (
 	"strings"
 )
 
-var words = []string{"GOLANG", "PYTHON", "JAVASCRIPT", "JAVA"} // Liste de mots pour le jeu
+var words = []string{"GOLANG", "PYTHON", "JAVASCRIPT", "JAVA"}
 
 var chosenWord string
 var guessedLetters []string
 var attemptsLeft = 10
-var tmpl *template.Template // Modifier la portée de la variable tmpl
+var tmpl *template.Template
 
 func init() {
-	rand.Seed(42) // Seed pour la génération aléatoire
+	rand.Seed(42)
 	chosenWord = pickRandomWord(words)
 }
 
@@ -30,6 +30,7 @@ func main() {
 	}
 
 	http.HandleFunc("/accueil", func(w http.ResponseWriter, r *http.Request) {
+		resetGame()
 		tmpl.ExecuteTemplate(w, "accueil", nil)
 	})
 
@@ -40,6 +41,7 @@ func main() {
 	http.HandleFunc("/hangman", hangmanHandler)
 	http.HandleFunc("/guess", guessHandler)
 	http.HandleFunc("/result", resultHandler)
+
 	rootDoc, _ := os.Getwd()
 	fileserver := http.FileServer(http.Dir(rootDoc + "/assets"))
 	http.Handle("/static/", http.StripPrefix("/static/", fileserver))
@@ -49,18 +51,16 @@ func main() {
 }
 
 func hangmanHandler(w http.ResponseWriter, r *http.Request) {
-	difficulty := r.URL.Query().Get("difficulty") // Récupérer la difficulté depuis l'URL
+	difficulty := r.URL.Query().Get("difficulty")
 
 	wordGuessed := isWordGuessed(chosenWord, guessedLetters)
 	lost := attemptsLeft <= 0 && !wordGuessed
 
 	if wordGuessed || lost {
-		// Si le joueur a gagné ou perdu, préparer les données de résultat et rediriger vers la route /result
 		http.Redirect(w, r, "/result", http.StatusSeeOther)
 		return
 	}
 
-	// Si le jeu n'est pas terminé, afficher la page du jeu
 	data := struct {
 		ChosenWord     string
 		GuessedLetters []string
@@ -104,9 +104,9 @@ func resultHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func guessHandler(w http.ResponseWriter, r *http.Request) {
-	letter := strings.ToUpper(r.FormValue("letter")) // Convertir la lettre devinée en majuscules
+	letter := strings.ToUpper(r.FormValue("letter"))
 	if letter == "" {
-		http.Error(w, "No letter provided", http.StatusBadRequest)
+		http.Error(w, "Pas de lettre reçue", http.StatusBadRequest)
 		return
 	}
 
@@ -171,5 +171,5 @@ func isWordGuessed(word string, guessedLetters []string) bool {
 func resetGame() {
 	chosenWord = pickRandomWord(words)
 	guessedLetters = []string{}
-	attemptsLeft = 6
+	attemptsLeft = 10
 }

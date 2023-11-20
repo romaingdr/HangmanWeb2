@@ -2,36 +2,174 @@ package main
 
 import (
 	"fmt"
+	"html/template"
+	"math/rand"
 	"net/http"
 	"os"
-	"text/template"
+	"strings"
 )
 
-func main() {
+var words = []string{"GOLANG", "PYTHON", "JAVASCRIPT", "JAVA"} // Liste de mots pour le jeu
 
-	temp, err := template.ParseGlob("./templates/*.gohtml")
+var chosenWord string
+var guessedLetters []string
+var attemptsLeft = 10
+var tmpl *template.Template // Modifier la portée de la variable tmpl
+
+func init() {
+	rand.Seed(42) // Seed pour la génération aléatoire
+	chosenWord = pickRandomWord(words)
+}
+
+func main() {
+	var err error
+	tmpl, err = template.ParseGlob("./templates/*.gohtml")
 	if err != nil {
 		fmt.Println(fmt.Sprintf("Erreur => %s", err.Error()))
+		return
 	}
 
 	http.HandleFunc("/accueil", func(w http.ResponseWriter, r *http.Request) {
-		temp.ExecuteTemplate(w, "accueil", nil)
+		tmpl.ExecuteTemplate(w, "accueil", nil)
 	})
 
 	http.HandleFunc("/rules", func(w http.ResponseWriter, r *http.Request) {
-		temp.ExecuteTemplate(w, "rules", nil)
+		tmpl.ExecuteTemplate(w, "rules", nil)
 	})
 
-	http.HandleFunc("/hangman", func(w http.ResponseWriter, r *http.Request) {
-		temp.ExecuteTemplate(w, "game", nil)
-	})
-
-	// Gestion des fichiers dans assets
+	http.HandleFunc("/hangman", hangmanHandler)
+	http.HandleFunc("/guess", guessHandler)
+	http.HandleFunc("/result", resultHandler)
 	rootDoc, _ := os.Getwd()
 	fileserver := http.FileServer(http.Dir(rootDoc + "/assets"))
 	http.Handle("/static/", http.StripPrefix("/static/", fileserver))
 
-	// Serveur
 	fmt.Println("Serveur lancé sur : http://localhost:8080/accueil")
-	http.ListenAndServe("localhost:8080", nil)
+	http.ListenAndServe(":8080", nil)
+}
+
+func hangmanHandler(w http.ResponseWriter, r *http.Request) {
+	difficulty := r.URL.Query().Get("difficulty") // Récupérer la difficulté depuis l'URL
+
+	wordGuessed := isWordGuessed(chosenWord, guessedLetters)
+	lost := attemptsLeft <= 0 && !wordGuessed
+
+	if wordGuessed || lost {
+		// Si le joueur a gagné ou perdu, préparer les données de résultat et rediriger vers la route /result
+		http.Redirect(w, r, "/result", http.StatusSeeOther)
+		return
+	}
+
+	// Si le jeu n'est pas terminé, afficher la page du jeu
+	data := struct {
+		ChosenWord     string
+		GuessedLetters []string
+		AttemptsLeft   int
+		Difficulty     string
+		Won            bool
+		Lost           bool
+	}{
+		ChosenWord:     maskWord(chosenWord, guessedLetters),
+		GuessedLetters: guessedLetters,
+		AttemptsLeft:   attemptsLeft,
+		Difficulty:     difficulty,
+		Won:            wordGuessed,
+		Lost:           lost,
+	}
+
+	err := tmpl.ExecuteTemplate(w, "game", data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func resultHandler(w http.ResponseWriter, r *http.Request) {
+	wordGuessed := isWordGuessed(chosenWord, guessedLetters)
+	lost := attemptsLeft <= 0 && !wordGuessed
+
+	data := struct {
+		Won        bool
+		Lost       bool
+		ChosenWord string
+	}{
+		Won:        wordGuessed,
+		Lost:       lost,
+		ChosenWord: chosenWord,
+	}
+
+	err := tmpl.ExecuteTemplate(w, "result", data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func guessHandler(w http.ResponseWriter, r *http.Request) {
+	letter := strings.ToUpper(r.FormValue("letter")) // Convertir la lettre devinée en majuscules
+	if letter == "" {
+		http.Error(w, "No letter provided", http.StatusBadRequest)
+		return
+	}
+
+	if isLetterInWord(letter, chosenWord) && !isLetterAlreadyGuessed(letter, guessedLetters) {
+		guessedLetters = append(guessedLetters, letter)
+	} else if !isLetterAlreadyGuessed(letter, guessedLetters) {
+		guessedLetters = append(guessedLetters, letter)
+		attemptsLeft--
+	}
+
+	if attemptsLeft <= 0 || isWordGuessed(chosenWord, guessedLetters) {
+		http.Redirect(w, r, "/result", http.StatusSeeOther)
+		return
+	}
+
+	http.Redirect(w, r, "/hangman", http.StatusSeeOther)
+}
+
+func pickRandomWord(words []string) string {
+	return words[rand.Intn(len(words))]
+}
+
+func maskWord(word string, guessedLetters []string) string {
+	var masked strings.Builder
+	for _, char := range word {
+		if containsString(guessedLetters, string(char)) {
+			masked.WriteRune(char)
+		} else {
+			masked.WriteRune('_')
+		}
+		masked.WriteRune(' ')
+	}
+	return masked.String()
+}
+
+func containsString(slice []string, str string) bool {
+	for _, s := range slice {
+		if s == str {
+			return true
+		}
+	}
+	return false
+}
+
+func isLetterInWord(letter string, word string) bool {
+	return strings.Contains(word, letter)
+}
+
+func isLetterAlreadyGuessed(letter string, guessedLetters []string) bool {
+	return containsString(guessedLetters, letter)
+}
+
+func isWordGuessed(word string, guessedLetters []string) bool {
+	for _, char := range word {
+		if !containsString(guessedLetters, string(char)) {
+			return false
+		}
+	}
+	return true
+}
+
+func resetGame() {
+	chosenWord = pickRandomWord(words)
+	guessedLetters = []string{}
+	attemptsLeft = 6
 }

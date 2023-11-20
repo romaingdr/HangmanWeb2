@@ -1,106 +1,76 @@
 {{define "game"}}
-    <head>
-        <link href="/static/main.css" rel="stylesheet">
-    </head>
-    <body>
-        <div class="content" id="gameback">
-            <a class="button" href="/accueil">
-                <span>⬅️ Retour</span>
-            </a>
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="/static/main.css" rel="stylesheet">
+    <title>Hangman Game</title>
+    <style>
+        .facile { color: green; }
+        .moyen { color: orange; }
+        .difficile { color: red; }
+    </style>
+</head>
+<body>
+
+<a href="../accueil" class="return-button">⬅️ Retour</a>
+<p id="word-display">{{.ChosenWord}}</p>
+<p>Difficulté :
+    {{if eq .Difficulty "facile"}}
+        <span class="facile">Facile</span>
+    {{else if eq .Difficulty "moyen"}}
+        <span class="moyen">Moyen</span>
+    {{else if eq .Difficulty "difficile"}}
+        <span class="difficile">Difficile</span>
+    {{end}}
+</p>
+
+<p id="guessed-letter">Lettres utilisées : {{.GuessedLetters}}</p>
+
+<div id="attempts-left">
+    <p>Tentatives restantes : <span id="remaining-attempts">{{.AttemptsLeft}}</span></p>
+    <div id="image-container">
+        <img src="/static/ressources/hangman{{.AttemptsLeft}}.png"/>
+    </div>
+</div>
+
+<form method="POST" action="/guess">
+    <div id="keyboard">
+        <div class="row">
+            <button class="icon-letter" type="submit" name="letter" value="A">A</button>
+            <button class="icon-letter" type="submit" name="letter" value="Z">Z</button>
+            <button class="icon-letter" type="submit" name="letter" value="E">E</button>
+            <button class="icon-letter" type="submit" name="letter" value="R">R</button>
+            <button class="icon-letter" type="submit" name="letter" value="T">T</button>
+            <button class="icon-letter" type="submit" name="letter" value="Y">Y</button>
+            <button class="icon-letter" type="submit" name="letter" value="U">U</button>
+            <button class="icon-letter" type="submit" name="letter" value="I">I</button>
+            <button class="icon-letter" type="submit" name="letter" value="O">O</button>
+            <button class="icon-letter" type="submit" name="letter" value="P">P</button>
+        </div>
+        <div class="row">
+            <button class="icon-letter" type="submit" name="letter" value="Q">Q</button>
+            <button class="icon-letter" type="submit" name="letter" value="S">S</button>
+            <button class="icon-letter" type="submit" name="letter" value="D">D</button>
+            <button class="icon-letter" type="submit" name="letter" value="F">F</button>
+            <button class="icon-letter" type="submit" name="letter" value="G">G</button>
+            <button class="icon-letter" type="submit" name="letter" value="H">H</button>
+            <button class="icon-letter" type="submit" name="letter" value="J">J</button>
+            <button class="icon-letter" type="submit" name="letter" value="K">K</button>
+            <button class="icon-letter" type="submit" name="letter" value="L">L</button>
+            <button class="icon-letter" type="submit" name="letter" value="M">M</button>
+        </div>
+        <div class="row">
+            <button class="icon-letter" type="submit" name="letter" value="W">W</button>
+            <button class="icon-letter" type="submit" name="letter" value="X">X</button>
+            <button class="icon-letter" type="submit" name="letter" value="C">C</button>
+            <button class="icon-letter" type="submit" name="letter" value="V">V</button>
+            <button class="icon-letter" type="submit" name="letter" value="B">B</button>
+            <button class="icon-letter" type="submit" name="letter" value="N">N</button>
         </div>
 
-        <div class="affichage">
-            <img src="static/ressources/hangman1.png">
-        </div>
+    </div>
+</form>
 
-        <form  class="word_input" method="post">
-            <label title="text" for="word_text">
-                <input type="text" name="word_text" class="word_text" placeholder="Rentrer un mot..." maxlength="16" autocomplete="off">
-            </label>
-            <button type="submit" value="Try" class="word_text">Essayer</button>
-        </form>
-
-        <div class="letters">
-            <div class="wrapper">
-                <div class="icon letter row-0">
-                    <span>A</span>
-                </div>
-                <div class="icon letter">
-                    <span>Z</span>
-                </div>
-                <div class="icon letter">
-                    <span>E</span>
-                </div>
-                <div class="icon letter">
-                    <span>R</span>
-                </div>
-                <div class="icon letter">
-                    <span>T</span>
-                </div>
-                <div class="icon letter">
-                    <span>Y</span>
-                </div>
-                <div class="icon letter">
-                    <span>U</span>
-                </div>
-                <div class="icon letter">
-                    <span>I</span>
-                </div>
-                <div class="icon letter">
-                    <span>O</span>
-                </div>
-                <div class="icon letter">
-                    <span>P</span>
-                </div>
-                <div class="icon letter row-1">
-                    <span>Q</span>
-                </div>
-                <div class="icon letter">
-                    <span>S</span>
-                </div>
-                <div class="icon letter">
-                    <span>D</span>
-                </div>
-                <div class="icon letter">
-                    <span>F</span>
-                </div>
-                <div class="icon letter">
-                    <span>G</span>
-                </div>
-                <div class="icon letter">
-                    <span>H</span>
-                </div>
-                <div class="icon letter">
-                    <span>J</span>
-                </div>
-                <div class="icon letter">
-                    <span>K</span>
-                </div>
-                <div class="icon letter">
-                    <span>L</span>
-                </div>
-                <div class="icon letter">
-                    <span>M</span>
-                </div>
-                <div class="icon letter row-2">
-                    <span>W</span>
-                </div>
-                <div class="icon letter">
-                    <span>X</span>
-                </div>
-                <div class="icon letter">
-                    <span>C</span>
-                </div>
-                <div class="icon letter">
-                    <span>V</span>
-                </div>
-                <div class="icon letter">
-                    <span>B</span>
-                </div>
-                <div class="icon letter">
-                    <span>N</span>
-                </div>
-            </div>
-        </div>
-    </body>
+</body>
+</html>
 {{end}}

@@ -1,25 +1,20 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"html/template"
 	"math/rand"
 	"net/http"
 	"os"
 	"strings"
+	"time"
 )
 
-var words = []string{"GOLANG", "PYTHON", "JAVASCRIPT", "JAVA"}
-
-var chosenWord string
+var chosenWord = ""
 var guessedLetters []string
 var attemptsLeft = 10
 var tmpl *template.Template
-
-func init() {
-	rand.Seed(42)
-	chosenWord = pickRandomWord(words)
-}
 
 func main() {
 	var err error
@@ -52,6 +47,12 @@ func main() {
 
 func hangmanHandler(w http.ResponseWriter, r *http.Request) {
 	difficulty := r.URL.Query().Get("difficulty")
+
+	if chosenWord == "" {
+		rand.Seed(42)
+		chosenWord, _ = pickRandomWord(difficulty)
+		fmt.Println("Mot : ", chosenWord)
+	}
 
 	wordGuessed := isWordGuessed(chosenWord, guessedLetters)
 	lost := attemptsLeft <= 0 && !wordGuessed
@@ -126,8 +127,37 @@ func guessHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/hangman?difficulty="+difficulty, http.StatusSeeOther)
 }
 
-func pickRandomWord(words []string) string {
-	return words[rand.Intn(len(words))]
+func pickRandomWord(mode string) (string, error) {
+	var filePath string
+	switch mode {
+	case "facile":
+		filePath = "assets/ressources/mot.txt"
+	case "moyen":
+		filePath = "assets/ressources/mot_2.txt"
+	case "difficile":
+		filePath = "assets/ressources/mot_3.txt"
+	}
+	file, err := os.Open(filePath)
+	if err != nil {
+		return "", err
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	words := []string{}
+	for scanner.Scan() {
+		word := scanner.Text()
+		words = append(words, word)
+	}
+
+	if err := scanner.Err(); err != nil {
+		return "", err
+	}
+
+	rand.Seed(time.Now().UnixNano())
+
+	randomIndex := rand.Intn(len(words))
+	return words[randomIndex], nil
 }
 
 func maskWord(word string, guessedLetters []string) string {
@@ -170,7 +200,7 @@ func isWordGuessed(word string, guessedLetters []string) bool {
 }
 
 func resetGame() {
-	chosenWord = pickRandomWord(words)
+	chosenWord = ""
 	guessedLetters = []string{}
 	attemptsLeft = 10
 }

@@ -1,6 +1,12 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins:900i');
 
 
+* {
+    cursor: url(https://cur.cursors-4u.net/cursors/cur-7/cur626.cur), auto !important;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box ;
+}
 body {
     font-family: 'Poppins', sans-serif;
     background-color: #C4EBC8;
@@ -9,8 +15,14 @@ body {
 
 #word-display {
     text-align: center;
-    margin-bottom: 20px;
     font-size:70px;
+}
+
+.large-image {
+    position: absolute;
+    top: 25%;
+    left: 38%;
+    height: 300px;
 }
 
 #guessed-letter{
@@ -31,14 +43,22 @@ body {
     font-size: 18px;
 }
 
-#image-container {
-    text-align: center; /* Centrer horizontalement */
+.grid-container {
+    display: grid;
+    grid-template-columns: auto 1fr; /* Une colonne pour l'image, le reste pour le texte */
+    grid-gap: 10px; /* Espacement vertical entre les éléments */
+    align-items: center; /* Aligner verticalement les éléments */
 }
 
-#image-container img {
-    display: block;
-    margin: 0 auto; /* Centrer l'image dans le conteneur */
+.image-section img {
+    height: 50px;
+    justify-self: end; /* Aligner l'image sur la droite */
 }
+
+ .text-container {
+     margin-top: -15px;
+     margin-bottom: 50px;
+ }
 
 #guess-input {
     margin-bottom: 20px;
@@ -60,6 +80,9 @@ body {
 }
 
 #keyboard {
+    position: absolute;
+    top: 65%;
+    left: 25%;
     display: flex;
     flex-direction: column;
     align-items: center;

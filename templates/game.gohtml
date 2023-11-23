@@ -14,24 +14,30 @@
 
 <a href="../accueil" class="return-button">⬅️ Retour</a>
 <p id="word-display">{{.ChosenWord}}</p>
-<p>Difficulté :
-    {{if eq .Difficulty "facile"}}
-        <span class="facile">Facile</span>
-    {{else if eq .Difficulty "moyen"}}
-        <span class="moyen">Moyen</span>
-    {{else if eq .Difficulty "difficile"}}
-        <span class="difficile">Difficile</span>
-    {{end}}
-</p>
 
-<p id="guessed-letter">Lettres utilisées : {{.GuessedLetters}}</p>
-
-<div id="attempts-left">
-    <p>Tentatives restantes : <span id="remaining-attempts">{{.AttemptsLeft}}</span></p>
-    <div id="image-container">
-        <img src="/static/ressources/hangman{{.AttemptsLeft}}.png"/>
+<div id="attempts-left" class="vertical-align">
+    <div class="text-container">
+        <p id="guessed-letter">Lettres utilisées : {{.GuessedLetters}}</p>
+    </div>
+    <div class="text-container">
+        <p>Tentatives restantes : <span id="remaining-attempts">{{.AttemptsLeft}}</span></p>
+    </div>
+    <div class="text-container">
+        <p>Difficulté :
+            {{if eq .Difficulty "facile"}}
+                <span class="facile">Facile</span>
+            {{else if eq .Difficulty "moyen"}}
+                <span class="moyen">Moyen</span>
+            {{else if eq .Difficulty "difficile"}}
+                <span class="difficile">Difficile</span>
+            {{end}}
+        </p>
+    </div>
+    <div class="image-container">
+        <img src="/static/ressources/hangman{{.AttemptsLeft}}.png" class="large-image"/>
     </div>
 </div>
+
 
 <form method="POST" id="guessForm" action="">
     <div id="keyboard">

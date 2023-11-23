@@ -1,5 +1,12 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins:900i');
 
+* {
+    cursor: url(https://cur.cursors-4u.net/cursors/cur-7/cur626.cur), auto !important;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
 html, body {
     display: grid;
     height: 100%;
@@ -9,9 +16,7 @@ html, body {
     overflow: hidden;
 }
 
-* {
-    box-sizing: border-box;
-}
+
 
 body {
     height: 100vh;

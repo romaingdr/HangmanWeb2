@@ -1,3 +1,7 @@
+* {
+    cursor: url(https://cur.cursors-4u.net/cursors/cur-7/cur626.cur), auto !important;
+}
+
 .content {
     display: flex;
     justify-content: center;
@@ -17,7 +21,6 @@
     transition: 1s;
     box-shadow: 6px 6px 0 black;
     transform: skewX(-15deg);
-    cursor: pointer;
     width: fit-content;
     text-align: center;
 }
@@ -33,10 +36,6 @@
 
 .button span {
     transform: skewX(15deg)
-}
-
-.default_cursor {
-    cursor: default;
 }
 
 #gameback {

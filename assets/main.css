@@ -45,14 +45,14 @@ body {
 
 .grid-container {
     display: grid;
-    grid-template-columns: auto 1fr; /* Une colonne pour l'image, le reste pour le texte */
-    grid-gap: 10px; /* Espacement vertical entre les éléments */
-    align-items: center; /* Aligner verticalement les éléments */
+    grid-template-columns: auto 1fr;
+    grid-gap: 10px;
+    align-items: center;
 }
 
 .image-section img {
     height: 50px;
-    justify-self: end; /* Aligner l'image sur la droite */
+    justify-self: end;
 }
 
  .text-container {
